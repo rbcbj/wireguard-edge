@@ -33,6 +33,6 @@ ADD assets/usr                 /usr
 
 EXPOSE 51820
 
-#VOLUME ["/var/lib/wg"]
+VOLUME ["/var/lib/wg"]
 
 ENTRYPOINT ["/docker-entrypoint.d/docker-entrypoint.sh"]

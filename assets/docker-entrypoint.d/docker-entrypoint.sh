@@ -270,13 +270,13 @@ wg_consolidate_clients
 
 nginx-setup
 
-#if [[ $# -ge 1 && -x $(which $1 2>&-) ]]; then
-#    exec "$@"
-#elif [[ $# -ge 1 ]]; then
-#    echo "ERROR: command not found: $1"
-#    exit 13
-#elif ps -ef | egrep -v grep | grep -q supervisord; then
-#    echo "Service already running, please restart container to apply changes"
-#else
-#    exec ionice -c 3 /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf </dev/null
-#fi
+if [[ $# -ge 1 && -x $(which $1 2>&-) ]]; then
+    exec "$@"
+elif [[ $# -ge 1 ]]; then
+    echo "ERROR: command not found: $1"
+    exit 13
+elif ps -ef | egrep -v grep | grep -q supervisord; then
+    echo "Service already running, please restart container to apply changes"
+else
+    exec ionice -c 3 /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf </dev/null
+fi
