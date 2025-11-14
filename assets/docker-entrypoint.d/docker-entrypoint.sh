@@ -95,7 +95,7 @@ function wg_config_bootstrap() {
   fi
 
   if [[ ! -f "${CONFIG_DIR}/${CONFIG_FILE}" ]]; then
-    echo "{}" | tee "${CONFIG_DIR}/${CONFIG_FILE}"
+    echo "{}" | tee "${CONFIG_DIR}/${CONFIG_FILE}" > /dev/null
   fi
 
   if [[ "$(_get ".spec.server.credential.key")" == "null" ]]; then
@@ -157,7 +157,7 @@ INTERFACE
 
 [Peer]
 PublicKey = $CRED_PUB
-AllowedIPs = $ALLOWED_IPS
+AllowedIPs = $SERVER_ADDRESS
 PersistentKeepalive = 25
 PEER
   done
@@ -168,6 +168,7 @@ PEER
 }
 
 function wg_consolidate_clients() {
+  SERVER_ADDRESS=$(_get ".spec.server.address")
   SERVER_ENDPOINT=$(_get ".spec.server.endpoint")
   SERVER_PORT=$(_get ".spec.server.port")
   SERVER_CRED_PUB=$(_get ".spec.server.credential.pub")
@@ -191,7 +192,7 @@ PrivateKey = ${CRED_KEY}
 [Peer]
 PublicKey = ${SERVER_CRED_PUB}
 Endpoint = ${SERVER_ENDPOINT}:${SERVER_PORT}
-AllowedIPs = 0.0.0.0/0
+AllowedIPs = ${SERVER_ADDRESS}
 PersistentKeepalive = 25
 PEER
     echo "========================================================================="
