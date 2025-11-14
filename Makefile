@@ -1,7 +1,7 @@
 include ../../utils/Env.mk
 
-PROJECT ?= wireguard-edge
-TAG     ?= 0.01
+PROJECT ?= nexus-gate
+TAG     ?= 0.0.1
 
 .PHONY: build
 build:
