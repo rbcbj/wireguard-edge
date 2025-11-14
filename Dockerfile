@@ -23,9 +23,7 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# forward request and error logs to docker log collector
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-  && ln -sf /dev/stderr /var/log/nginx/error.log
+RUN rm /etc/nginx/sites-enabled/default
 
 ADD assets/etc                 /etc
 ADD assets/docker-entrypoint.d /docker-entrypoint.d

@@ -85,6 +85,22 @@ nginx-setup() {
     sed 's/client_max_body_size.*$/client_max_body_size '${CLIENT_MAX_BODY_SIZE}';/' -i /etc/nginx/snippet/file-upload-size.conf
 }
 
+function nginx_service_add() {
+  local service_name="${1}"
+  local service_internal_fqdn="${2}"
+  local service_endpoint="${3}"
+  local service_external_fqdn=$(echo $service_endpoint | sed 's;.*/;;')
+
+  (
+    export SERVICE_NAME="${service_name}"
+    export SERVICE_INTERNAL_FQDN="${service_internal_fqdn}"
+    export SERVICE_ENDPOINT="${service_endpoint}"
+    export SERVICE_EXTERNAL_FQDN="${service_external_fqdn}"
+
+    envsubst '$SERVICE_NAME $SERVICE_ENDPOINT SERVICE_INTERNAL_FQDN $SERVICE_EXTERNAL_FQDN' < /etc/nginx/sites-template/service.conf > /etc/nginx/sites-enabled/${service_name}.conf
+  )
+}
+
 #===============================================================================
 # wireguard support functions
 #===============================================================================
@@ -244,6 +260,12 @@ Options (fields in '[]' are optional, '<>' are required):
                 required arg: \"<name>\"
                 NOTE: for optional values, just leave blank
                 [allowed_ip] default: 0.0.0.0/0; otherwise, allowed ip address
+    -s \"<service_name;service_fqdn;service_endpoint\">
+                Configure a service to be routed
+                required arg: \"<service_name;service_fqdn;service_endpoint\">
+                  service_name: the service name (space not allowed [a-zA-Z0-9.-]
+                  service_fqdn: the service address to be used for serving
+                  service_endpoint: the internal service address to expose through tunnel
 
 The 'command' (if provided and valid) will be run instead of supervisord
 " >&2
@@ -253,13 +275,14 @@ The 'command' (if provided and valid) will be run instead of supervisord
 wg_config_bootstrap
 _del ".peer.list"
 
-while getopts ":ha:b:e:p:" opt; do
+while getopts ":ha:b:e:p:s:" opt; do
     case "$opt" in
         h) usage ;;
         a) eval wg_server_address $OPTARG ;;
         b) eval wg_server_port $OPTARG ;;
         e) eval wg_server_endpoint $OPTARG ;;
         p) eval wg_peer_add $(sed 's/^/"/; s/$/"/; s/;/" "/g' <<< $OPTARG) ;;
+        s) eval nginx_service_add $(sed 's/^/"/; s/$/"/; s/;/" "/g' <<< $OPTARG) ;;
         "?") echo "Unknown option: -$OPTARG"; usage 1 ;;
         ":") echo "No argument value for option: -$OPTARG"; usage 2 ;;
     esac
