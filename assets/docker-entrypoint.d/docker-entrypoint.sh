@@ -97,7 +97,7 @@ function nginx_service_add() {
     export SERVICE_ENDPOINT="${service_endpoint}"
     export SERVICE_EXTERNAL_FQDN="${service_external_fqdn}"
 
-    envsubst '$SERVICE_NAME $SERVICE_ENDPOINT SERVICE_INTERNAL_FQDN $SERVICE_EXTERNAL_FQDN' < /etc/nginx/sites-template/service.conf > /etc/nginx/sites-enabled/${service_name}.conf
+    envsubst '$SERVICE_NAME $SERVICE_ENDPOINT $SERVICE_INTERNAL_FQDN $SERVICE_EXTERNAL_FQDN' < /etc/nginx/sites-template/service.conf > /etc/nginx/sites-enabled/${service_name}.conf
   )
 }
 
