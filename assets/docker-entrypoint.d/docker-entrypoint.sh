@@ -87,17 +87,17 @@ nginx-setup() {
 
 function nginx_service_add() {
   local service_name="${1}"
-  local service_internal_fqdn="${2}"
-  local service_endpoint="${3}"
-  local service_external_fqdn=$(echo $service_endpoint | sed 's;.*/;;')
+  local service_internal="${2}"
+  local service_external="${3}"
+  local service_endpoint="${4}"
 
   (
     export SERVICE_NAME="${service_name}"
-    export SERVICE_INTERNAL_FQDN="${service_internal_fqdn}"
+    export SERVICE_INTERNAL="${service_internal}"
+    export SERVICE_EXTERNAL="${service_external}"
     export SERVICE_ENDPOINT="${service_endpoint}"
-    export SERVICE_EXTERNAL_FQDN="${service_external_fqdn}"
 
-    envsubst '$SERVICE_NAME $SERVICE_ENDPOINT $SERVICE_INTERNAL_FQDN $SERVICE_EXTERNAL_FQDN' < /etc/nginx/sites-template/service.conf > /etc/nginx/sites-enabled/${service_name}.conf
+    envsubst '$SERVICE_NAME $SERVICE_ENDPOINT $SERVICE_INTERNAL $SERVICE_EXTERNAL' < /etc/nginx/sites-template/service.conf > /etc/nginx/sites-enabled/${service_name}.conf
   )
 }
 
