@@ -255,17 +255,19 @@ usage() { local RC="${1:-0}"
     echo "Usage: ${0##*/} [-opt] [command]
 Options (fields in '[]' are optional, '<>' are required):
     -h          This help
-    -p \"<name;address>[;allowed_ip]\"
+    -a \"<server ip range>\"
+    -b \"<server port bind>\"
+    -e \"<server public address>\"
+    -p \"<name;address>\"
                 Configure a peer
-                required arg: \"<name>\"
-                NOTE: for optional values, just leave blank
-                [allowed_ip] default: 0.0.0.0/0; otherwise, allowed ip address
-    -s \"<service_name;service_fqdn;service_endpoint\">
+                required arg: \"<name;address>\"
+    -s \"<service_name;internal_domain;external_domain;service_endpoint\">
                 Configure a service to be routed
-                required arg: \"<service_name;service_fqdn;service_endpoint\">
+                required arg: \"<service_name;internal_domain;external_domain;service_endpoint\">
                   service_name: the service name (space not allowed [a-zA-Z0-9.-]
-                  service_fqdn: the service address to be used for serving
-                  service_endpoint: the internal service address to expose through tunnel
+                  internal_domain: the internal domain name
+                  external_domain: the external domain name, basically the host for the service_endpoint
+                  service_endpoint: the external endpoint to be proxied
 
 The 'command' (if provided and valid) will be run instead of supervisord
 " >&2

@@ -27,17 +27,19 @@ For the parameters, you can check `docker-entrypoint.sh`:
 Usage: docker-entrypoint.sh [-opt] [command]
 Options (fields in '[]' are optional, '<>' are required):
     -h          This help
-    -p "<name;address>[;allowed_ip]"
+    -a "<server ip range>"
+    -b "<server port bind>"
+    -e "<server public address>"
+    -p "<name;address>"
                 Configure a peer
-                required arg: "<name>"
-                NOTE: for optional values, just leave blank
-                [allowed_ip] default: 0.0.0.0/0; otherwise, allowed ip address
-    -s "<service_name;service_fqdn;service_endpoint">
+                required arg: "<name;address>"
+    -s "<service_name;internal_domain;external_domain;service_endpoint">
                 Configure a service to be routed
-                required arg: "<service_name;service_fqdn;service_endpoint">
+                required arg: "<service_name;internal_domain;external_domain;service_endpoint">
                   service_name: the service name (space not allowed [a-zA-Z0-9.-]
-                  service_fqdn: the service address to be used for serving
-                  service_endpoint: the internal service address to expose through tunnel
+                  internal_domain: the internal domain name
+                  external_domain: the external domain name, basically the host for the service_endpoint
+                  service_endpoint: the external endpoint to be proxied
 
 The 'command' (if provided and valid) will be run instead of supervisord
 ```
@@ -45,14 +47,14 @@ The 'command' (if provided and valid) will be run instead of supervisord
 For a quick TL;DR; you can check this `docker-compose.yml`:
 ```
 services:
-  wireguard-edge:
+  nexus-gate:
     image: rbcbj/nexus-gate:main
     command: |
       -a 10.6.0.1/24
       -b 51820
       -e <the address endpoint of server to be used in clients>
       -p "user;10.6.0.2/32"
-      -s 'google;google.internal;https://google.com'
+      -s 'google;google.internal;www.google.com;https://www.google.com'
     cap_add:
       - NET_ADMIN
     ports:
@@ -60,6 +62,9 @@ services:
     volumes:
       - ./config:/var/lib/wg/
 ```
+
+> [!NOTE]  
+> The use of this solution as a transparent proxy is limited, and it is not fully supported.
 
 The previous example will create a service redirection that will respond to `google.internal` and proxy to external endpoint.
 
