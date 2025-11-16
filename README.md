@@ -64,9 +64,9 @@ services:
 ```
 
 > [!NOTE]  
-> The use of this solution as a transparent proxy is limited, and it is not fully supported.
+> The use of this solution as a fully transparent proxy is discouraged, and it is not fully supported.
 
-The previous example will create a service redirection that will respond to `google.internal` and proxy to external endpoint.
+The previous example will create a service redirection that will respond to `google.internal` and proxy it to the external endpoint.
 
 Be mindful that you need to create the correct entry for the DNS. It can be setup in `hosts` or as a proper DNS entry.
 
